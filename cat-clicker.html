@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cat Clicker</title>
+    <style>
+        body {background-color: powderblue;}
+        .flex {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            width: 100vw
+        }
+        #cat-display-area {position: relative;}
+        .cat-box {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            background-color: aquamarine;
+        }
+        .cat-box .img {
+            width: 360px;
+            height: 360px;
+        }
+        .cat-list-item {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="flex">
+    <div id="cat-list-area"></div>
+    <div id="cat-display-area"></div>
+</div>
+
+<script>
+
+
+    let cats = [
+        {
+            id: 'catID-1',
+            name: 'bob',
+            image: "https://lh3.ggpht.com/nlI91wYNCrjjNy5f-S3CmVehIBM4cprx-JFWOztLk7vFlhYuFR6YnxcT446AvxYg4Ab7M1Fy0twaOCWYcUk=s0#w=640&h=426",
+
+        },
+        {
+            id: 'catID-2',
+            name: 'bob 2.0',
+            image: "https://lh3.ggpht.com/kixazxoJ2ufl3ACj2I85Xsy-Rfog97BM75ZiLaX02KgeYramAEqlEHqPC3rKqdQj4C1VFnXXryadFs1J9A=s0#w=640&h=496",
+
+        }
+    ]
+
+
+    createCatElems(cats, document.getElementById('cat-display-area'))
+    createCatList(cats, document.getElementById('cat-list-area'))
+
+    function createCatList(arrayOfCatImg, rootElem) {
+        let ulElem = document.createElement('ul')
+        ulElem.setAttribute('class','cat-list')
+
+        let catListElems = arrayOfCatImg.map(function(cat, idx, catArray) {
+
+            let liElem = document.createElement('li')
+            liElem.setAttribute('class','cat-list-item')
+            liElem.setAttribute('data-cat', cat.id)
+            liElem.innerText = cat.name
+
+            liElem.addEventListener('click', function(e){
+                let catTarget = document.getElementById(e.target.dataset.cat)
+                console.log(catTarget)
+                catArray.forEach(function(cat){
+                    let catElem = document.getElementById(cat.id)
+                    console.log('catElem: ',catElem)
+                    if (cat.id !== e.target.dataset.cat) {
+                        catElem.removeAttribute('style')
+                    } else {
+                        catTarget.setAttribute('style','z-index: 1;')
+                    }
+                })
+            })
+            return liElem
+        })
+
+        console.log(catListElems)
+
+        catListElems.forEach(function(cat) {
+            ulElem.append(cat)
+        })
+
+        rootElem.append(ulElem)
+    }
+
+    function createCatElems(arrayOfCatImg, rootElem) {
+
+
+        let catElems = arrayOfCatImg.map(function(cat) {
+            let catBox = document.createElement("div")
+            catBox.setAttribute('class','cat-box')
+            catBox.setAttribute('id', String(cat.id))
+
+            let catNameElem = document.createElement("p")
+            catNameElem.setAttribute('class','cat-name')
+            catNameElem.innerHTML = cat.name
+
+            let catCountElem = document.createElement("span")
+            catCountElem.setAttribute('class', 'count')
+
+            let catImgElem = document.createElement("img")
+            catImgElem.setAttribute('class','cat-image')
+            catImgElem.setAttribute('src', cat.image)
+
+            catImgElem.addEventListener('click', (function() {
+                let count = 0
+                return function() {
+                    count = count + 1
+                    catCountElem.innerText = String(count)
+                }
+            })())
+
+            catBox.appendChild(catNameElem)
+            catBox.appendChild(catImgElem)
+            catBox.appendChild(catCountElem)
+
+            return catBox
+
+        })
+
+        catElems.forEach(function(cat) {
+            rootElem.append(cat)
+        })
+
+    }
+
+</script>
+</body>
+</html>
